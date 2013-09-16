@@ -80,27 +80,57 @@ This has not yet been implemented, and is known to fail. When this is fixed, thi
 (ert-deftest octomacs-unit-test-octomacs-rake-with-rvm ()
   "Ensure `octomacs-rake-with-rvm' runs the appropriate rake command"
   (with-mock
-    (mock (rvm--rvmrc-locate) => "~/directory")
-    (mock (rvm--rvmrc-read-version "~/directory") => '("ruby-version" "gemset-name"))
-    (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post'") => "command output")
-    (should (equal "command output"
-                   (octomacs-rake-with-rvm "~/directory" "new_post"))))
+   (mock (rvm--load-info-rvmrc) => '("ruby-version" "gemset-name"))
+   (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post"))))
   (with-mock
-    (mock (rvm--rvmrc-locate) => "~/directory")
-    (mock (rvm--rvmrc-read-version "~/directory") => '("ruby-version" "gemset-name"))
-    (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post[arg1]'") => "command output")
-    (should (equal "command output"
-                   (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1")))))
+   (mock (rvm--load-info-rvmrc) => '("ruby-version" "gemset-name"))
+   (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post[arg1]'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1")))))
   (with-mock
-    (mock (rvm--rvmrc-locate) => nil)
-    (mock (shell-command-to-string "rake 'new_post'") => "command output")
-    (should (equal "command output"
-                   (octomacs-rake-with-rvm "~/directory" "new_post"))))
+   (mock (rvm--load-info-rvmrc) => nil)
+   (mock (rvm--load-info-ruby-version) => '("ruby-version" "gemset-name"))
+   (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post"))))
   (with-mock
-    (mock (rvm--rvmrc-locate) => nil)
-    (mock (shell-command-to-string "rake 'new_post[arg1]'") => "command output")
-    (should (equal "command output"
-                   (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1"))))))
+   (mock (rvm--load-info-rvmrc) => nil)
+   (mock (rvm--load-info-ruby-version) => '("ruby-version" "gemset-name"))
+   (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post[arg1]'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1")))))
+
+  (with-mock
+   (mock (rvm--load-info-rvmrc) => nil)
+   (mock (rvm--load-info-ruby-version) => nil)
+   (mock (rvm--load-info-gemfile) => '("ruby-version" "gemset-name"))
+   (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post"))))
+  (with-mock
+   (mock (rvm--load-info-rvmrc) => nil)
+   (mock (rvm--load-info-ruby-version) => nil)
+   (mock (rvm--load-info-gemfile) => '("ruby-version" "gemset-name"))
+   (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post[arg1]'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1")))))
+
+  (with-mock
+   (mock (rvm--load-info-rvmrc) => nil)
+   (mock (rvm--load-info-ruby-version) => nil)
+   (mock (rvm--load-info-gemfile) => nil)
+   (mock (shell-command-to-string "rake 'new_post'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post"))))
+  (with-mock
+   (mock (rvm--load-info-rvmrc) => nil)
+   (mock (rvm--load-info-ruby-version) => nil)
+   (mock (rvm--load-info-gemfile) => nil)
+   (mock (shell-command-to-string "rake 'new_post[arg1]'") => "command output")
+   (should (equal "command output"
+		  (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1"))))))
 
 (ert-deftest octomacs-unit-test-octomacs-new-post--interactively ()
   "Ensure `octomacs-new-post' gets its interactive arguments from `octomacs-new-post-interactive'"

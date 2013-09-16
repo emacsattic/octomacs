@@ -133,15 +133,18 @@ the specified directory name.  Passes the directory through
 (defun octomacs-format-rake-task-with-args (task &optional arguments)
   "Build a shell suitable string of the rake TASK name with the specified ARGUMENTS."
   (let ((arguments-string (if arguments
-                              (format "[%s]" (mapconcat 'octomacs-shell-escape-string arguments ", "))
+                              (format "[%s]" (if (listp arguments) (mapconcat 'octomacs-shell-escape-string arguments ", ") arguments))
                             "")))
     (format "'%s%s'" task arguments-string)))
 
 (defun octomacs-rake-with-rvm (directory task &optional arguments)
   "Run rake task TASK with specified ARGUMENTS in DIRECTORY using rvm"
-  (let ((default-directory (file-name-as-directory (expand-file-name directory))))
-    (rvm-activate-corresponding-ruby)
-    (shell-command-to-string (format "rake %s" (octomacs-format-rake-task-with-args task arguments)))))
+  (let* ((default-directory (file-name-as-directory (expand-file-name directory)))
+         (rvmrc-info (or (rvm--load-info-rvmrc) (rvm--load-info-ruby-version) (rvm--load-info-gemfile)))
+         (rvm-command (if rvmrc-info
+                          (concat "rvm " (mapconcat 'identity rvmrc-info "@") " do ")
+                        "")))
+    (shell-command-to-string (format "%srake %s" rvm-command (octomacs-format-rake-task-with-args task arguments)))))
 
 (defun octomacs-rake-without-rvm (directory task &optional arguments)
   "Run rake task TASK with specified ARGUMENTS in DIRECTORY"
