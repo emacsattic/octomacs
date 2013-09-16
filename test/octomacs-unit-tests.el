@@ -19,7 +19,6 @@
 (ert-deftest octomacs-unit-test-octomacs-format-rake-task-with-args-with-single-arg ()
   "Ensure `octomacs-format-rake-task-with-args' works when a single non-list 'args' is provided.
 This has not yet been implemented, and is known to fail. When this is fixed, this should be rolled into the general test."
-  :expected-result :failed
   (should (equal "'task[arg1]'" (octomacs-format-rake-task-with-args "task" "arg1"))))
 
 (ert-deftest octomacs-unit-test-octomacs-new-post-interactive ()
@@ -81,23 +80,27 @@ This has not yet been implemented, and is known to fail. When this is fixed, thi
   "Ensure `octomacs-rake-with-rvm' runs the appropriate rake command"
   (with-mock
    (mock (rvm--load-info-rvmrc) => '("ruby-version" "gemset-name"))
+   (not-called rvm--load-info-ruby-version)
    (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post'") => "command output")
    (should (equal "command output"
 		  (octomacs-rake-with-rvm "~/directory" "new_post"))))
   (with-mock
    (mock (rvm--load-info-rvmrc) => '("ruby-version" "gemset-name"))
+   (not-called rvm--load-info-ruby-version)
    (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post[arg1]'") => "command output")
    (should (equal "command output"
 		  (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1")))))
   (with-mock
    (mock (rvm--load-info-rvmrc) => nil)
    (mock (rvm--load-info-ruby-version) => '("ruby-version" "gemset-name"))
+   (not-called rvm--load-info-gemfile)
    (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post'") => "command output")
    (should (equal "command output"
 		  (octomacs-rake-with-rvm "~/directory" "new_post"))))
   (with-mock
    (mock (rvm--load-info-rvmrc) => nil)
    (mock (rvm--load-info-ruby-version) => '("ruby-version" "gemset-name"))
+   (not-called rvm--load-info-gemfile)
    (mock (shell-command-to-string "rvm ruby-version@gemset-name do rake 'new_post[arg1]'") => "command output")
    (should (equal "command output"
 		  (octomacs-rake-with-rvm "~/directory" "new_post" '("arg1")))))
