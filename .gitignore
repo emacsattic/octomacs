@@ -1,3 +1,4 @@
 /octomacs-autoloads.el*
 /test/ert.el
 /test/el-mock.el
+*.elc
