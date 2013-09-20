@@ -1,7 +1,6 @@
 language: emacs-lisp
 env:
   matrix:
-    - EMACS=emacs22
     - EMACS=emacs23
     - EMACS=emacs24
     - EMACS=emacs-snapshot
