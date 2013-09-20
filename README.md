@@ -52,6 +52,11 @@ name, when asked for an Octopress project.
 * Ability to call `rake new_page` with the name of a new page.
 * Ability to call `rake deploy` (possibly with arguments).
 
+# Contributors
+
+* Jacob Helwig
+* Kim Sunrim
+
 [Octopress]: http://octopress.org "Octopress site"
 [Emacs]: http://www.gnu.org/software/emacs/ "Emacs site"
 [Marmalade]: http://marmalade-repo.org/ "Marmalade Repo site"
