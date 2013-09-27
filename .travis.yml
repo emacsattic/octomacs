@@ -6,10 +6,8 @@ env:
     - EMACS=emacs-snapshot
 matrix:
   allow_failures:
-    - env:
-        - EMACS=emacs22
-    - env:
-        - EMACS=emacs-snapshot
+    - env: EMACS=emacs22
+    - env: EMACS=emacs-snapshot
 ###
 ### runtime initialization
 ###
